@@ -5,12 +5,13 @@
 //        Updated December 18th 2019
 
 //        This file is the javascript for a scrabble game
+//        All images taken from https://jesseheines.com/~heines/91.461/91.461-2015-16f/461-assn/Scrabble_Tiles.html and https://europeisnotdead.com/european-longest-words/
 
 var scoreSum = 0;
 var currentScore = 0;
 var remainingTiles = 100;
 
-//Json to represent scrabble tiles. Taken and modified from Jesse Heines at https://jesseheines.com/~heines/91.461/91.461-2015-16f/461-assn/Scrabble_Pieces_AssociativeArray_Jesse.js
+//Json to represent scrabble tiles. Taken and modified from https://jesseheines.com/~heines/91.461/91.461-2015-16f/461-assn/Scrabble_Pieces_AssociativeArray_Jesse.js
 var ScrabbleTiles = [];
 ScrabbleTiles[0] = {
   "letter": "A",
@@ -211,6 +212,7 @@ $(function() {
     revertDuration: 0
   });
 
+  //Taken and modified from https://jqueryui.com/droppable/#accepted-elements and https://jqueryui.com/draggable/#revert
   $(".board").droppable({
     tolerance: "fit",
     drop: function(event, ui) {
@@ -222,6 +224,7 @@ $(function() {
         $(ui.draggable).draggable("option", "revert", true);
         $(ui.draggable)[0].classList.remove("played", "doubleLetterScore", "doubleWordScore", "tripleLetterScore", "tripleWordScore");
       } else {
+        //Otherwise track which tile it was placed on
         $(this).addClass("occupied");
         $(ui.draggable).addClass("played");
         if ($(this)[0].classList.contains('doubleLetter')) {
@@ -236,9 +239,11 @@ $(function() {
         if ($(this)[0].classList.contains('tripleWord')) {
           $(ui.draggable).addClass("tripleWordScore");
         }
+        //Update the score for the current word dynamically
         calculateScore(event, ui, false);
       }
     },
+    //When a tile is removed from the board, remove class elements that were added when it was placed, and recalculate score.
     out: function(event, ui) {
       $(this)[0].classList.remove("occupied");
       calculateScore(event, ui, true);
@@ -248,6 +253,7 @@ $(function() {
     }
   });
 
+  //Deals first hand
   dealTiles(true);
 });
 
@@ -347,7 +353,7 @@ function enterScores(){
   document.getElementById("totalScore").innerHTML = scoreSum;
 }
 
-//Function to reset the array when tiles are removed from the board
+//Function to reset the array when tiles are removed from the board and put back into the bag
 function resetBag() {
   ScrabbleTiles[0] = {
     "letter": "A",
@@ -540,6 +546,7 @@ function resetBag() {
   };
 }
 
+//Handles starting a brand new game
 function newGame() {
   resetBag();
   dealTiles(true);
